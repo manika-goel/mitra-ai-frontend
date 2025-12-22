@@ -102,7 +102,7 @@ export default function SecurityQuestionPage() {
           disabled:opacity-40 disabled:cursor-not-allowed
           text-white text-lg font-semibold rounded-full shadow-lg"
         >
-          Save & Continue
+          Login
         </motion.button>
       </motion.div>
 

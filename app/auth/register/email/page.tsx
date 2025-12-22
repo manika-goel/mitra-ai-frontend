@@ -118,7 +118,7 @@ export default function SignupEmailPage() {
           whileTap={{ scale: 0.97 }}
           className="w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-lg transition-all"
         >
-          Sign Up
+          Register
         </motion.button>
 
         {/* Footer */}

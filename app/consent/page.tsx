@@ -16,23 +16,26 @@ export default function ConsentPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 text-center px-6 py-16">
+    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden 
+    bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 text-center px-6 py-16">
+
       {/* ===== Animated Gradient Background ===== */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-200/50 via-sky-200/30 to-purple-200/40 backdrop-blur-3xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-br 
+      from-indigo-200/50 via-sky-200/30 to-purple-200/40 backdrop-blur-3xl" />
 
       {/* ===== Animated Glow Blobs ===== */}
       <motion.div
         animate={{ y: [0, 30, 0] }}
         transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
         className="absolute w-[480px] h-[480px] bg-indigo-300/40 rounded-full blur-[120px] top-16 left-20"
-      ></motion.div>
+      />
       <motion.div
         animate={{ y: [0, -30, 0] }}
         transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
         className="absolute w-[560px] h-[560px] bg-blue-300/40 rounded-full blur-[130px] bottom-24 right-16"
-      ></motion.div>
+      />
 
-      {/* ===== Floating Shield Emoji ===== */}
+      {/* ===== Shield Icon ===== */}
       <motion.div
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: [0, -12, 0], opacity: 1 }}
@@ -47,32 +50,42 @@ export default function ConsentPage() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="relative z-10 max-w-4xl w-full bg-white/60 backdrop-blur-2xl border border-white/50 rounded-[2.5rem] shadow-2xl p-12 flex flex-col items-center transition-all"
+        className="relative z-10 max-w-4xl w-full bg-white/70 backdrop-blur-2xl 
+        border border-white/50 rounded-[2.5rem] shadow-2xl px-14 py-16 flex flex-col items-center"
       >
-        <h1 className="text-5xl font-extrabold text-gray-800 mb-4 tracking-tight">
-          Your Privacy Matters
+        {/* Title */}
+        <h1 className="text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">
+          Consent & Privacy
         </h1>
-        <p className="text-lg text-gray-700 leading-relaxed mb-8 max-w-3xl">
-          Welcome to <span className="font-semibold text-indigo-600">MitrAI</span>.  
-          Before you continue, please read this consent carefully.  
-          Your <strong>wellbeing</strong> and <strong>privacy</strong> are our top priorities.  
-          Everything you share stays <span className="text-indigo-700 font-medium">confidential</span> and <span className="text-green-600 font-medium">secure</span>.  
-          This is your safe, judgment-free space 🌿  
-          By continuing, you confirm you understand and agree to our data & privacy terms.
-        </p>
+
+        {/* Content */}
+        <div className="text-left text-gray-700 text-lg leading-relaxed space-y-5 max-w-3xl">
+          <p>
+            MitrAI will keep your information safe and confidential.
+          </p>
+          <p>
+            Your data will be used only to understand your emotions and mental state.
+          </p>
+          <p>
+            We do not sell or misuse your personal information.
+          </p>
+          <p>
+            By continuing, you give consent to this process.
+          </p>
+        </div>
 
         {/* Agree Button */}
         <motion.button
           whileHover={{ scale: 1.05, boxShadow: "0px 0px 25px rgba(99,102,241,0.6)" }}
           whileTap={{ scale: 0.96 }}
           onClick={handleAgree}
-          className={`mt-4 px-12 py-4 text-lg font-semibold rounded-full text-white transition-all duration-300 ${
+          className={`mt-10 px-14 py-5 text-lg font-semibold rounded-full text-white transition-all duration-300 ${
             agreed
               ? "bg-gradient-to-r from-green-400 to-emerald-500 shadow-lg"
               : "bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 shadow-xl"
           }`}
         >
-          {agreed ? "✅ Agreed" : "I Agree"}
+          {agreed ? "✅ Agreed" : "I Agree & Continue"}
         </motion.button>
 
         {/* Thank You Message */}
@@ -81,28 +94,21 @@ export default function ConsentPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="mt-6 text-green-700 font-medium text-lg tracking-wide"
+            className="mt-6 text-green-700 font-medium text-lg"
           >
             Thank you for trusting MitrAI 💙
           </motion.p>
         )}
       </motion.div>
 
-      {/* ===== Soft Gradient Stripes Overlay ===== */}
+      {/* ===== Soft Wave Stripes ===== */}
       <svg
         className="absolute inset-0 w-full h-full opacity-20"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
       >
         <defs>
-          <pattern
-            id="wavePattern"
-            x="0"
-            y="0"
-            width="140"
-            height="140"
-            patternUnits="userSpaceOnUse"
-          >
+          <pattern id="wavePattern" x="0" y="0" width="140" height="140" patternUnits="userSpaceOnUse">
             <path
               d="M 0 70 Q 35 40, 70 70 T 140 70"
               fill="none"

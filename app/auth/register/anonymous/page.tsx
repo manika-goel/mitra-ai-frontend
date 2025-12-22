@@ -76,6 +76,20 @@ export default function AnonymousLoginPage() {
           placeholder:text-gray-400
           caret-indigo-500
           focus:bg-white
+          focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-4"
+        />
+
+        {/* Trusted Person Input */}
+        <input
+          type="text"
+          placeholder="Who is the person you trust most?"
+          className="w-full px-5 py-4 rounded-full
+          border border-gray-300
+          bg-white/80
+          text-gray-800
+          placeholder:text-gray-400
+          caret-indigo-500
+          focus:bg-white
           focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-6"
         />
 
@@ -85,7 +99,7 @@ export default function AnonymousLoginPage() {
           whileTap={{ scale: 0.97 }}
           className="w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-lg transition-all mb-6"
         >
-          Continue Anonymously
+          Register
         </motion.button>
 
         {/* Footer */}
@@ -106,5 +120,3 @@ export default function AnonymousLoginPage() {
     </main>
   );
 }
-
-
