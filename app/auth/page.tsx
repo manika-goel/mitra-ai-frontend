@@ -5,11 +5,12 @@ import Link from "next/link";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 px-6 py-16 text-center">
+    <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center 
+    bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 px-6 py-16 text-center">
 
-      {/* Wavy Background */}
+      {/* Wavy Background (static) */}
       <svg
-        className="absolute inset-0 w-full h-full opacity-40"
+        className="absolute inset-0 w-full h-full opacity-30"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
       >
@@ -25,7 +26,7 @@ export default function LoginPage() {
             <path
               d="M 0 70 Q 35 40, 70 70 T 140 70"
               fill="none"
-              stroke="rgba(59,130,246,0.35)"
+              stroke="rgba(59,130,246,0.3)"
               strokeWidth="3"
             />
           </pattern>
@@ -33,59 +34,57 @@ export default function LoginPage() {
         <rect width="100%" height="100%" fill="url(#wavePattern)" />
       </svg>
 
-      {/* Animated Blobs */}
+      {/* Floating Blobs (lighter & slower) */}
       <motion.div
-        animate={{ y: [0, 40, 0] }}
-        transition={{ repeat: Infinity, duration: 8 }}
-        className="absolute w-[540px] h-[540px] bg-blue-300/40 rounded-full blur-3xl top-10 left-10"
+        animate={{ y: [0, 25, 0] }}
+        transition={{ repeat: Infinity, duration: 14, ease: "easeInOut" }}
+        className="absolute w-[420px] h-[420px] bg-blue-300/30 
+        rounded-full blur-[100px] top-16 left-16 will-change-transform"
       />
       <motion.div
-        animate={{ y: [0, -40, 0] }}
-        transition={{ repeat: Infinity, duration: 10 }}
-        className="absolute w-[680px] h-[680px] bg-indigo-300/30 rounded-full blur-3xl bottom-10 right-10"
+        animate={{ y: [0, -25, 0] }}
+        transition={{ repeat: Infinity, duration: 16, ease: "easeInOut" }}
+        className="absolute w-[520px] h-[520px] bg-indigo-300/25 
+        rounded-full blur-[120px] bottom-12 right-16 will-change-transform"
       />
 
       {/* Cards Wrapper */}
-      <div className="relative z-10 flex flex-col lg:flex-row gap-14 w-full max-w-5xl">
+      <div className="relative z-10 flex flex-col lg:flex-row gap-12 w-full max-w-5xl">
 
         {/* Login Card */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
-          className="w-full bg-white/90 backdrop-blur-2xl border border-white/60 
-          rounded-3xl shadow-2xl px-12 py-16 flex flex-col items-center"
+          transition={{ duration: 0.6 }}
+          className="w-full bg-white/90 backdrop-blur-xl border border-white/60 
+          rounded-3xl shadow-xl px-12 py-14 flex flex-col items-center"
         >
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-12">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-10">
             Login
           </h1>
 
-          <div className="flex flex-col gap-8 w-full">
-            {/* Login as Anonymous – EXACT purple */}
+          <div className="flex flex-col gap-7 w-full">
             <Link href="/auth/login/anonymous">
               <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
                 className="w-full min-h-[64px]
                 bg-[#615FFF] hover:bg-[#514DFF]
                 text-white text-lg font-semibold
-                rounded-full
-                shadow-[0_10px_25px_rgba(0,0,0,0.15)]"
+                rounded-full shadow-lg transition-all"
               >
                 Login as Anonymous
               </motion.button>
             </Link>
 
-            {/* Login with Email – EXACT blue */}
             <Link href="/auth/login/email">
               <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
                 className="w-full min-h-[64px]
                 bg-[#2B7FFF] hover:bg-[#1F6FFF]
                 text-white text-lg font-semibold
-                rounded-full
-                shadow-[0_10px_25px_rgba(0,0,0,0.15)]"
+                rounded-full shadow-lg transition-all"
               >
                 Login with Email
               </motion.button>
@@ -95,49 +94,44 @@ export default function LoginPage() {
 
         {/* Register Card */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.15 }}
-          className="w-full bg-white/90 backdrop-blur-2xl border border-white/60 
-          rounded-3xl shadow-2xl px-12 py-16 flex flex-col items-center"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="w-full bg-white/90 backdrop-blur-xl border border-white/60 
+          rounded-3xl shadow-xl px-12 py-14 flex flex-col items-center"
         >
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-12">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-10">
             Register
           </h1>
 
-          <div className="flex flex-col gap-8 w-full">
-            {/* Register with Email – SAME blue */}
+          <div className="flex flex-col gap-7 w-full">
             <Link href="/auth/register/email">
               <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
                 className="w-full min-h-[64px]
                 bg-[#2B7FFF] hover:bg-[#1F6FFF]
                 text-white text-lg font-semibold
-                rounded-full
-                shadow-[0_10px_25px_rgba(0,0,0,0.15)]"
+                rounded-full shadow-lg transition-all"
               >
                 Register with Email
               </motion.button>
             </Link>
 
-            {/* Register as Anonymous – SAME purple */}
             <Link href="/auth/register/anonymous">
               <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
                 className="w-full min-h-[64px]
                 bg-[#615FFF] hover:bg-[#514DFF]
                 text-white text-lg font-semibold
-                rounded-full
-                shadow-[0_10px_25px_rgba(0,0,0,0.15)]"
+                rounded-full shadow-lg transition-all"
               >
                 Register as Anonymous
               </motion.button>
             </Link>
           </div>
         </motion.div>
-
       </div>
 
       {/* Footer */}
