@@ -11,7 +11,7 @@ export default function ConsentPage() {
   const handleAgree = () => {
     setAgreed(true);
     setTimeout(() => {
-      router.push("/auth");
+      router.push("/onboarding");
     }, 1200);
   };
 
