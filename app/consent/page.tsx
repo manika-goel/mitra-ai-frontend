@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 
 export default function ConsentPage() {
   const [agreed, setAgreed] = useState(false);
@@ -17,6 +18,8 @@ export default function ConsentPage() {
   };
 
   return (
+    <>
+    <Navbar/>
     <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden 
     bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 text-center px-6 py-16">
 
@@ -123,5 +126,6 @@ export default function ConsentPage() {
         <rect width="100%" height="100%" fill="url(#wavePattern)" />
       </svg>
     </main>
+    </>
   );
 }

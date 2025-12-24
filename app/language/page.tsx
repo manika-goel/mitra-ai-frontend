@@ -4,11 +4,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Globe2 } from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 export default function LanguagePage() {
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
+    <>
+    <Navbar/>
     <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center 
     bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 px-6 py-20 text-center">
 
@@ -164,5 +167,6 @@ export default function LanguagePage() {
         © 2025 MitrAI | Language makes emotions clearer 💫
       </p>
     </main>
+    </>
   );
 }
