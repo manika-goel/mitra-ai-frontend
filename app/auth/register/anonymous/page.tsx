@@ -2,42 +2,70 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react"; // State management ke liye
+import { useRouter } from "next/navigation"; // Redirect ke liye
 
 export default function AnonymousLoginPage() {
+  // 1. Form States
+  const [nickname, setNickname] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  // 2. Register Logic
+  const handleAnonymousRegister = async (e: any) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/signup/anonymous", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nickname: nickname,
+          password: password,
+          confirm_password: confirmPassword,
+          security_question: "Who is the person you trust most?", // Ye fixed question hai
+          security_answer: securityAnswer
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Anonymous Account Created! 🎉 Ab login kijiye.");
+        router.push("/auth/login/anonymous");
+      } else {
+        alert("Error: " + (data.error || "Signup failed"));
+      }
+    } catch (error) {
+      console.error("Connection Error:", error);
+      alert("Backend connect nahi ho raha!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center 
     bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 px-6 py-16 text-center">
 
-      {/* Wavy Background */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-30"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-      >
+      {/* Background SVGs and Blobs (Keeping Gatik's design) */}
+      <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
         <defs>
           <pattern id="wavePattern" x="0" y="0" width="140" height="140" patternUnits="userSpaceOnUse">
-            <path
-              d="M 0 70 Q 35 40, 70 70 T 140 70"
-              fill="none"
-              stroke="rgba(59,130,246,0.3)"
-              strokeWidth="3"
-            />
+            <path d="M 0 70 Q 35 40, 70 70 T 140 70" fill="none" stroke="rgba(59,130,246,0.3)" strokeWidth="3" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#wavePattern)" />
       </svg>
-
-      {/* Floating Blobs */}
-      <motion.div
-        animate={{ y: [0, 20, 0] }}
-        transition={{ repeat: Infinity, duration: 16, ease: "easeInOut" }}
-        className="absolute w-[380px] h-[380px] bg-blue-300/25 rounded-full blur-[100px] top-16 left-16 will-change-transform"
-      />
-      <motion.div
-        animate={{ y: [0, -20, 0] }}
-        transition={{ repeat: Infinity, duration: 18, ease: "easeInOut" }}
-        className="absolute w-[420px] h-[420px] bg-indigo-300/25 rounded-full blur-[120px] bottom-14 right-16 will-change-transform"
-      />
 
       {/* Anonymous Card */}
       <motion.div
@@ -46,75 +74,60 @@ export default function AnonymousLoginPage() {
         transition={{ duration: 0.45 }}
         className="relative z-10 max-w-md w-full bg-white/85 backdrop-blur-xl border border-white/50 rounded-3xl shadow-xl p-10 flex flex-col items-center"
       >
-        <motion.h1
-          className="text-4xl font-bold text-gray-800 mb-4"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
-          Stay Anonymous
-        </motion.h1>
+        <motion.h1 className="text-4xl font-bold text-gray-800 mb-4">Stay Anonymous</motion.h1>
+        <p className="text-gray-600 text-sm mb-6">No email. No phone. Just a safe space 💙</p>
 
-        <p className="text-gray-600 text-sm mb-6">
-          No email. No phone. Just a safe space for you 💙
-        </p>
-
-        {/* Nickname */}
+        {/* Inputs */}
         <input
           type="text"
           placeholder="Choose a nickname"
-          className="w-full px-5 py-4 mb-4 rounded-full border border-gray-300
-          bg-white/80 text-gray-800 placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          className="w-full px-5 py-4 mb-4 rounded-full border border-gray-300 bg-white/80 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
-        {/* Password */}
         <input
           type="password"
           placeholder="Enter password"
-          className="w-full px-5 py-4 mb-4 rounded-full border border-gray-300
-          bg-white/80 text-gray-800 placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-5 py-4 mb-4 rounded-full border border-gray-300 bg-white/80 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
-        {/* Confirm Password */}
         <input
           type="password"
           placeholder="Confirm password"
-          className="w-full px-5 py-4 mb-4 rounded-full border border-gray-300
-          bg-white/80 text-gray-800 placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="w-full px-5 py-4 mb-4 rounded-full border border-gray-300 bg-white/80 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
-        {/* Security Question / Trusted Person */}
+        {/* Security Question Input */}
         <input
           type="text"
           placeholder="Who is the person you trust most?"
-          className="w-full px-5 py-4 mb-6 rounded-full border border-gray-300
-          bg-white/80 text-gray-800 placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={securityAnswer}
+          onChange={(e) => setSecurityAnswer(e.target.value)}
+          className="w-full px-5 py-4 mb-6 rounded-full border border-gray-300 bg-white/80 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
 
-        {/* CTA */}
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.96 }}
+          onClick={handleAnonymousRegister}
+          disabled={loading}
           className="w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-lg transition-all mb-6"
         >
-          Register
+          {loading ? "Registering..." : "Register"}
         </motion.button>
 
-        {/* Footer */}
         <p className="text-sm text-gray-500">
-          Want full access?{" "}
-          <Link
-            href="/auth/login/anonymous"
-            className="text-indigo-600 font-medium hover:underline"
-          >
+          Already have an account?{" "}
+          <Link href="/auth/login/anonymous" className="text-indigo-600 font-medium hover:underline">
             Login
           </Link>
         </p>
       </motion.div>
-
-      <p className="absolute bottom-6 text-gray-500 text-sm z-10">
-        © 2025 MitrAI | Your Emotional Wellbeing Partner 💙
-      </p>
     </main>
   );
 }
