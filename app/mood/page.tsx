@@ -53,12 +53,12 @@ export default function MoodTracker() {
             
             {/* TOP ICONS (Zap, Heart, Info) - WAPAS AA GAYE */}
             <div className="w-full flex justify-between items-center mb-4">
-               <div className="flex gap-3 text-slate-300">
+              <div className="flex gap-3 text-slate-300">
                   <Zap size={18} className="hover:text-yellow-400 transition-colors cursor-pointer" />
                   <Heart size={18} className="hover:text-rose-400 transition-colors cursor-pointer" />
                   <Info size={18} className="hover:text-indigo-400 transition-colors cursor-pointer" />
-               </div>
-               <span className="text-[9px] font-black uppercase bg-indigo-50 px-2 py-0.5 rounded text-indigo-500 tracking-tighter">AI Connected</span>
+              </div>
+              <span className="text-[9px] font-black uppercase bg-indigo-50 px-2 py-0.5 rounded text-indigo-500 tracking-tighter">AI Connected</span>
             </div>
 
             {/* AVATAR STAGE */}
@@ -85,13 +85,13 @@ export default function MoodTracker() {
             <div className="w-full text-center mt-4">
               <h2 className="text-3xl font-black text-slate-800">{detectedMood}</h2>
               <div className="mt-4 p-4 bg-indigo-50/50 rounded-[2rem] border border-indigo-100 flex items-center gap-3 text-left">
-                 <div className="p-2 bg-indigo-600 rounded-xl text-white">
+                <div className="p-2 bg-indigo-600 rounded-xl text-white">
                     <Target size={16} />
-                 </div>
-                 <div>
+                </div>
+                <div>
                     <p className="text-[8px] font-black text-indigo-400 uppercase tracking-widest">Suggested Activity</p>
                     <p className="text-[11px] font-bold text-slate-700 italic">{config.activity}</p>
-                 </div>
+                </div>
               </div>
             </div>
           </div>
@@ -104,11 +104,11 @@ export default function MoodTracker() {
                 
                 {/* BATTERY WAPAS AA GAYI */}
                 <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-50 shadow-sm">
-                   <div className="w-10 h-5 border-2 border-slate-200 rounded p-[1px] relative">
+                  <div className="w-10 h-5 border-2 border-slate-200 rounded p-[1px] relative">
                       <motion.div animate={{ width: `${energyScore}%` }} className={`h-full rounded-[1px] ${energyScore < 40 ? 'bg-rose-500' : 'bg-emerald-400'}`} />
                       <div className="absolute right-[-5px] top-1/2 -translate-y-1/2 w-1 h-2 bg-slate-200 rounded-r-sm" />
-                   </div>
-                   <span className="text-xs font-black text-indigo-900 italic">{energyScore}% Energy</span>
+                  </div>
+                  <span className="text-xs font-black text-indigo-900 italic">{energyScore}% Energy</span>
                 </div>
               </div>
 
@@ -125,12 +125,12 @@ export default function MoodTracker() {
 
             {/* LOWER STATS */}
             <div className="grid grid-cols-2 gap-4">
-               <div className="bg-indigo-600 p-6 rounded-[2.5rem] text-white flex flex-col justify-center relative overflow-hidden shadow-lg group">
+              <div className="bg-indigo-600 p-6 rounded-[2.5rem] text-white flex flex-col justify-center relative overflow-hidden shadow-lg group">
                   <p className="text-[8px] font-black uppercase opacity-60 mb-1 tracking-widest">Weekly Insight</p>
                   <p className="text-lg font-bold italic">Your vibe is up 12% <br/> from last week! 📈</p>
                   <Sparkles className="absolute right-0 bottom-0 w-20 h-20 text-white/10" />
-               </div>
-               <div className="bg-white p-6 rounded-[2.5rem] border border-white shadow-sm flex items-center gap-4">
+              </div>
+              <div className="bg-white p-6 rounded-[2.5rem] border border-white shadow-sm flex items-center gap-4">
                   <div className="p-4 bg-rose-50 text-rose-500 rounded-2xl">
                     <Heart fill="currentColor" size={20} />
                   </div>
@@ -138,7 +138,7 @@ export default function MoodTracker() {
                     <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Overall Health</p>
                     <p className="text-lg font-black text-slate-800 italic">Very Good</p>
                   </div>
-               </div>
+              </div>
             </div>
           </div>
 

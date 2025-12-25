@@ -23,7 +23,7 @@ export default function Navbar() {
             */}
             <nav className="fixed top-1 left-0 right-0 z-[9999] flex justify-center px-2">
                 <div className="w-full flex items-center justify-between px-5 py-3
-                bg-transparent backdrop-blur-xl border border-white/20rounded-2xl">
+                bg-transparent backdrop-blur-xl">
 
                     {/* Logo Area */}
                     <Link href="/" className="flex items-center gap-2 group">
