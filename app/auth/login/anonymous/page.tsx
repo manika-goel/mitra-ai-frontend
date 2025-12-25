@@ -40,7 +40,7 @@ export default function AnonymousLogin() {
       }
     } catch (error) {
       console.error("Connection Error:", error);
-      alert("Backend se connection nahi ho paya!");
+      alert("Backend not connected!");
     } finally {
       setLoading(false);
     }

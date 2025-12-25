@@ -47,7 +47,7 @@ export default function AnonymousLoginPage() {
       }
     } catch (error) {
       console.error("Connection Error:", error);
-      alert("Backend connect nahi ho raha!");
+      alert("Backend not connected!");
     } finally {
       setLoading(false);
     }
