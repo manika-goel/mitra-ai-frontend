@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   PlayCircle, Palette, BookOpen, ArrowLeft, ChevronRight, X, Heart, 
@@ -10,10 +10,10 @@ import Navbar from "@/components/Navbar";
 // Content Data Pool
 const allData: any = {
   videos: [
-    { id: 1, title: "4-7-8 Breathing", url: "https://www.youtube.com/embed/1vRTo7P_Iis", color: "from-blue-400 to-cyan-500", sub: "Anxiety Relief" },
-    { id: 2, title: "Mental Stress Buster", url: "https://www.youtube.com/embed/z6X5oEIg6Ak", color: "from-yellow-400 to-orange-500", sub: "Quick Boost" },
+    { id: 1, title: "Quick Calm", url: "https://www.youtube.com/embed/inpok4MKVLM", color: "from-blue-400 to-cyan-500", sub: "Anxiety Relief" },
+    { id: 2, title: "5 Min Mindfulness", url: "https://www.youtube.com/embed/ZToicY62f1U", color: "from-yellow-400 to-orange-500", sub: "Quick Boost" },
     { id: 3, title: "Deep Focus Lo-Fi", url: "https://www.youtube.com/embed/jfKfPfyJRdk", color: "from-indigo-400 to-purple-500", sub: "Study/Work" },
-    { id: 4, title: "Morning Yoga", url: "https://www.youtube.com/embed/VaoV1PrYftY", color: "from-green-400 to-emerald-500", sub: "Morning Energy" },
+    { id: 4, title: "Nature Sounds", url: "https://www.youtube.com/embed/mPhHLeC_S0M", color: "from-green-400 to-emerald-500", sub: "Morning Energy" },
   ],
   activities: [
     { id: 8, title: "Zen Doodle Pad", actId: "doodle", icon: <Palette />, color: "from-pink-400 to-rose-500", sub: "Draw your stress away" },
@@ -33,12 +33,36 @@ export default function ToolkitPage() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [activeGenre, setActiveGenre] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-
+  const [toolkitData, setToolkitData] = useState<any>(null);
+  
   const goBack = () => {
     if (activeGenre) setActiveGenre(null);
     else setActiveTab(null);
   };
-
+  
+  const activeContent = toolkitData || allData;
+  useEffect(() => {
+    const fetchUserMoodAndToolkit = async () => {
+      try {
+        // 1. Pehle user ka analytics/mood fetch karo
+        const moodRes = await fetch("http://127.0.0.1:5000/api/mood/analytics");
+        const moodData = await moodRes.json();
+        console.log("1. Mood Found:", moodData.avatar_state); // Ye 'happy', 'neutral' ya 'stressed' hoga
+        
+        // 2. Ab wahi mood Toolkit API ko bhejo
+        const toolkitRes = await fetch(`http://127.0.0.1:5000/api/toolkit/${moodData.avatar_state}`);
+        const data = await toolkitRes.json();
+        console.log("2. Toolkit Data:", data);
+        
+        setToolkitData(data);
+      } catch (err) {
+        console.error("Error syncing toolkit:", err);
+      }
+    };
+    
+    fetchUserMoodAndToolkit();
+  }, []);
+  
   return (
     <>
       <Navbar />
@@ -87,9 +111,9 @@ export default function ToolkitPage() {
                     <ArrowLeft size={20} /> Main Menu
                 </button>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {(activeTab === "stories" ? allData.stories[activeGenre!] : allData[activeTab!]).map((item: any) => (
+                  {(activeTab === "stories" ? activeContent.stories[activeGenre!] : activeContent[activeTab!]).map((item: any) => (
                     <div key={item.id} onClick={() => setSelectedItem(item)} className="bg-white/80 backdrop-blur-md p-6 rounded-[2.5rem] border border-white flex items-center justify-between cursor-pointer hover:shadow-xl transition-all group">
-                       <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-6">
                           <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white shadow-inner group-hover:scale-110 transition-transform`}>
                             {activeTab === "videos" ? <PlayCircle /> : activeTab === "stories" ? <BookOpen /> : <Palette />}
                           </div>
@@ -97,8 +121,8 @@ export default function ToolkitPage() {
                             <h4 className="text-xl font-bold text-gray-800">{item.title}</h4>
                             <p className="text-sm text-gray-500 font-medium italic">{item.sub}</p>
                           </div>
-                       </div>
-                       <ChevronRight size={20} className="text-indigo-300 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                      <ChevronRight size={20} className="text-indigo-300 group-hover:translate-x-1 transition-transform" />
                     </div>
                   ))}
                 </div>
@@ -111,7 +135,7 @@ export default function ToolkitPage() {
         <AnimatePresence>
           {selectedItem && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-               <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white rounded-[3rem] shadow-2xl w-full max-w-3xl overflow-hidden p-10 relative">
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white rounded-[3rem] shadow-2xl w-full max-w-3xl overflow-hidden p-10 relative">
                   <button onClick={() => setSelectedItem(null)} className="absolute top-8 right-8 bg-gray-100 p-2 rounded-full hover:bg-red-50 text-gray-500 transition-all shadow-sm"><X size={24}/></button>
                   {selectedItem.url ? (
                     <iframe width="100%" height="400px" src={selectedItem.url} className="rounded-3xl shadow-xl" allowFullScreen />
@@ -123,7 +147,7 @@ export default function ToolkitPage() {
                       </div>
                     </div>
                   )}
-               </motion.div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
