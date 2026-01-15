@@ -1,14 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // useState add kiya
 import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false); // Hydration fix ke liye state
 
-  // ⏱ Faster redirect (UX feels snappier)
+  // ⏱ Faster redirect
   useEffect(() => {
+    setIsMounted(true); // Component mount hone ke baad true hoga
     const timer = setTimeout(() => {
       router.push("/information");
     }, 3000);
@@ -19,7 +21,7 @@ export default function LandingPage() {
     <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden 
     bg-gradient-to-br from-indigo-100 via-sky-100 to-cyan-50 text-center font-sans">
 
-      {/* ===== DIAGONAL STRIPES (lighter & slower) ===== */}
+      {/* ===== DIAGONAL STRIPES ===== */}
       <motion.div
         className="absolute inset-0 opacity-30"
         style={{
@@ -37,7 +39,7 @@ export default function LandingPage() {
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* ===== SOFT GRADIENT FLOW (GPU friendly) ===== */}
+      {/* ===== SOFT GRADIENT FLOW ===== */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-tr 
         from-indigo-200/25 via-sky-200/25 to-cyan-200/25"
@@ -46,7 +48,7 @@ export default function LandingPage() {
         style={{ backgroundSize: "200% 200%" }}
       />
 
-      {/* ===== Floating Glow Orbs (optimized) ===== */}
+      {/* ===== Floating Glow Orbs ===== */}
       <motion.div
         animate={{ y: [0, 20, 0] }}
         transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
@@ -58,9 +60,9 @@ export default function LandingPage() {
         className="absolute w-[520px] h-[520px] bg-sky-300/30 rounded-full blur-3xl bottom-10 right-10 will-change-transform"
       />
 
-      {/* ===== Floating Particles (30 → 12) ===== */}
+      {/* ===== Floating Particles (Hydration Fix Applied) ===== */}
       <div className="absolute inset-0 overflow-hidden">
-        {Array.from({ length: 12 }).map((_, i) => (
+        {isMounted && Array.from({ length: 12 }).map((_, i) => (
           <motion.span
             key={i}
             className="absolute w-1.5 h-1.5 bg-indigo-400/40 rounded-full"
@@ -84,7 +86,6 @@ export default function LandingPage() {
         transition={{ duration: 0.8 }}
         className="relative z-10 flex flex-col items-center"
       >
-        {/* Logo */}
         <motion.img
           src="/logo.png"
           alt="MitrAI Logo"
@@ -94,7 +95,6 @@ export default function LandingPage() {
           transition={{ duration: 0.7 }}
         />
 
-        {/* Tagline */}
         <motion.p
           className="text-2xl md:text-4xl text-gray-700 font-medium"
           initial={{ opacity: 0, y: 20 }}
@@ -104,7 +104,6 @@ export default function LandingPage() {
           Every mind needs a Mitr.
         </motion.p>
 
-        {/* Loading Hint */}
         <motion.p
           className="mt-8 text-sm text-gray-500"
           initial={{ opacity: 0 }}
