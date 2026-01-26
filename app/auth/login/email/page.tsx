@@ -38,6 +38,7 @@ export default function EmailLogin() {
       if (response.ok) {
         alert("Login Successful! 🎉");
         localStorage.setItem("token", data.token); // JWT Token save kar liya
+        localStorage.setItem("user_id", email);
         router.push("/dashboard"); // Successful login ke baad dashboard par bhejein
       } else {
         alert("Login Failed: " + (data.error || "Invalid Credentials"));

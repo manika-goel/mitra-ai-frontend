@@ -43,6 +43,7 @@ export default function Dashboard() {
   const handleLogout = () => {
     localStorage.clear();
     router.push("/auth");
+    window.location.reload();
   };
 
   return (

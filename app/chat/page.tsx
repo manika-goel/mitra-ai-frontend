@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, Menu, Plus, Settings, X, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function MitrChatPro() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -11,57 +12,152 @@ export default function MitrChatPro() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  // Abhi ke liye hum constant user_id use kar rahe hain
+  const [currentUser_id, setCurrentUserId] = useState<string | null>(null); 
+  const [isLoading, setIsLoading] = useState(true);
+  // --- FEATURE: Purani Chat Load Karna ---
 
   useEffect(() => {
-  if (scrollRef.current) {
-    scrollRef.current.scrollIntoView({ behavior: "smooth" });
-  }
-}, [messages, isTyping]);
+  const checkAuth = () => {
+    const savedUser = localStorage.getItem("user_id");
+    if (savedUser) {
+      setCurrentUserId(savedUser);
+      setIsLoading(false); // ID mil gayi, ab loading band
+    } else {
+      // 500ms ka chota sa delay taaki storage check ho sake
+      setTimeout(() => {
+        if (!localStorage.getItem("user_id")) {
+          router.push("/auth");
+        } else {
+          setCurrentUserId(localStorage.getItem("user_id"));
+          setIsLoading(false);
+        }
+      }, 500);
+    }
+  };
+
+  checkAuth();
+}, []);
+
+  useEffect(() => {
+  // Sabse zaroori check: Agar ID null hai toh fetch mat karo
+  if (!currentUser_id) return; 
+
+  const loadChatHistory = async () => {
+    try {
+      console.log("Fetching history for:", currentUser_id);
+      const response = await fetch(`http://127.0.0.1:5000/api/chat/history/${currentUser_id}`);
+      
+      if (!response.ok) throw new Error("Backend error");
+
+      const data = await response.json();
+      
+      if (Array.isArray(data)) {
+        const formattedMessages = data
+          .filter((msg: any) => msg.text) // Khali messages hatao
+          .map((msg: any, index: number) => ({
+            text: msg.text,
+            sender: msg.sender,
+            id: `hist-${index}`
+          }));
+        setMessages(formattedMessages);
+      }
+    } catch (error) {
+      console.error("History load nahi ho payi:", error);
+    }
+  };
+
+  loadChatHistory();
+}, [currentUser_id]);
+
+useEffect(() => {
+  if (!currentUser_id) return;
+    const loadChatHistory = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/chat/history/${currentUser_id}`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          // Filter out empty messages and format correctly
+          const formattedMessages = data
+            .filter((msg: any) => msg.text && msg.text.trim() !== "") // Khali message hatane ke liye
+            .map((msg: any, index: number) => ({
+              text: msg.text,
+              sender: msg.sender === "user" ? "user" : "bot",
+              id: `hist-${index}-${Date.now()}` // Unique ID
+            }));
+          setMessages(formattedMessages);
+        }
+      } catch (error) {
+        console.error("History loading failed:", error);
+      }
+    };
+    loadChatHistory();
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isTyping]);
 
   const handleSend = async (text = "") => {
-  const messageToSend = typeof text === "string" && text !== "" ? text : input;
-  if (!messageToSend || !messageToSend.trim()) return;
-  
-  // 1. User ka message screen par dikhayein
-  const userId = "u-" + Date.now();
-  setMessages((prev) => [...prev, { text: messageToSend, sender: "user", id: userId }]);
-  setInput("");
-  setIsTyping(true); // Loading animation start
+    const messageToSend = typeof text === "string" && text !== "" ? text : input;
+    if (!messageToSend || !messageToSend.trim()) return;
 
-  try {
-    // 2. Backend (Flask) ko message bhejein
-    const response = await fetch("http://127.0.0.1:5000/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: messageToSend })
-    });
+    if (!currentUser_id) {
+      alert("User session not found. Please login again.");
+      router.push("/auth");
+      return;
+    }
+    
+    const userId = "u-" + Date.now();
+    setMessages((prev) => [...prev, { text: messageToSend, sender: "user", id: userId }]);
+    setInput("");
+    setIsTyping(true);
 
-    const data = await response.json();
-    const botId = "b-" + Date.now();
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          message: messageToSend,
+          user_id: currentUser_id // Backend ko user_id bhej rahe hain save karne ke liye
+        })
+      });
+      if (!response.ok) throw new Error("Server error");
+      const data = await response.json();
+      const botId = "b-" + Date.now();
 
-    // 3. Gemini ka asli jawab screen par dikhayein
-    setMessages((prev) => [...prev, { 
-      text: data.reply, 
-      sender: "bot", 
-      id: botId 
-    }]);
+      setMessages((prev) => [...prev, { 
+        text: data.reply, 
+        sender: "bot", 
+        id: botId 
+      }]);
 
-  } catch (error) {
-    console.error("Connection Error:", error);
-    setMessages((prev) => [...prev, { 
-      text: "MitrAI abhi so raha hai. Please check if Backend is running!", 
-      sender: "bot", 
-      id: "err" 
-    }]);
-  } finally {
-    setIsTyping(false); // Loading stop
+    } catch (error) {
+      console.error("Connection Error:", error);
+      setMessages((prev) => [...prev, { 
+        text: "MitrAI abhi so raha hai. Please check if Backend is running!", 
+        sender: "bot", 
+        id: "err-" + Date.now() 
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#f8fafc]">
+        <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-slate-600 font-medium">Loading MitrAI...</p>
+      </div>
+    );
   }
-};
-
   return (
     <main className="flex h-screen w-full bg-[#f8fafc] overflow-hidden font-sans text-slate-900">
       
-      {/* 1. SIDEBAR */}
+      {/* Sidebar remains the same */}
       <AnimatePresence mode="wait">
         {isSidebarOpen && (
           <motion.aside 
@@ -88,8 +184,11 @@ export default function MitrChatPro() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 space-y-2">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2 mb-2">Recent</p>
-              <div className="text-xs text-slate-400 ml-2 italic">No recent chats</div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2 mb-2">Recent Chats (Saved)</p>
+              {/* Aap yahan messages ki history list bhi dikha sakti hain */}
+              <div className="text-xs text-slate-500 ml-2 bg-white/50 p-2 rounded-lg border border-blue-50">
+                Conversation 1
+              </div>
             </div>
 
             <div className="p-4 border-t border-blue-100 space-y-1">
@@ -104,7 +203,6 @@ export default function MitrChatPro() {
         )}
       </AnimatePresence>
 
-      {/* 2. MAIN CHAT AREA */}
       <section className="flex-1 flex flex-col relative h-full">
         <header className="h-16 border-b border-slate-100 bg-white/50 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-40">
           <div className="flex items-center gap-4">
@@ -131,7 +229,6 @@ export default function MitrChatPro() {
                 exit={{ opacity: 0 }}
                 className="h-full flex flex-col items-center justify-center text-center"
               >
-                  {/* Floating Motion Logo */}
                   <motion.div 
                     animate={{ y: [0, -10, 0] }} 
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -141,7 +238,7 @@ export default function MitrChatPro() {
                   </motion.div>
 
                   <h2 className="text-2xl font-bold text-slate-800">How can I support you today?</h2>
-                  <p className="text-sm text-slate-400 mt-2 mb-8">Start a conversation to begin your emotional journey.</p>
+                  <p className="text-sm text-slate-400 mt-2 mb-8">History is loaded. You can continue our previous talk.</p>
                   
                   <div className="flex flex-wrap justify-center gap-3 max-w-md">
                     {["I'm feeling stressed", "Let's vent out", "Need motivation"].map((chip, index) => (
@@ -162,8 +259,12 @@ export default function MitrChatPro() {
                 animate={{ opacity: 1 }}
                 className="space-y-6"
               >
-                {messages.map((msg) => (
-                  <div key={msg.id} className={"flex " + (msg.sender === "user" ? "justify-end" : "justify-start")}>
+                {messages.map((msg, index) => {
+  // Agar message mein text nahi hai, toh render mat karo
+                if (!msg.text) return null; 
+
+                return (
+                  <div key={msg.id || index} className={"flex " + (msg.sender === "user" ? "justify-end" : "justify-start")}>
                     <div className={"max-w-[75%] p-4 rounded-3xl " + (
                       msg.sender === "user" 
                       ? "bg-indigo-600 text-white rounded-br-none" 
@@ -172,7 +273,8 @@ export default function MitrChatPro() {
                       {msg.text}
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </motion.div>
             )}
           </AnimatePresence>
@@ -188,7 +290,6 @@ export default function MitrChatPro() {
           <div ref={scrollRef} />
         </div>
 
-        {/* Input area remains same but with fixed Send logic */}
         <div className="p-6">
           <div className="max-w-4xl mx-auto flex items-center gap-2 bg-white p-2 rounded-[2rem] shadow-2xl border border-slate-100">
             <input 

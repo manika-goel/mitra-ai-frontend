@@ -33,7 +33,9 @@ export default function AnonymousLogin() {
 
       if (response.ok) {
         alert(`Welcome back, ${data.nickname || "Mitr"}! 🎉`);
+        const uniqueAnonId = "anon_" + nickname;
         localStorage.setItem("token", data.token); // Token save kar liya
+        localStorage.setItem("user_id", uniqueAnonId);
         router.push("/dashboard"); // Seedha dashboard/chat par
       } else {
         alert("Error: " + (data.error || "Login failed"));
