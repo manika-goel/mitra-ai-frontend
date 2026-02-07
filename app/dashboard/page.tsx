@@ -1,3 +1,147 @@
+// "use client";
+
+// import { motion } from "framer-motion";
+// import {
+//   MessageCircle,
+//   Briefcase,
+//   BarChart3,
+//   Settings,
+//   LogOut,
+// } from "lucide-react";
+// import { useRouter } from "next/navigation";
+
+// export default function Dashboard() {
+//   const router = useRouter();
+
+//   // Calendar hata diya hai, ab sirf 3 main tools hain
+//   const cards = [
+//     {
+//       title: "MitrAI Chatbot",
+//       desc: "Talk to your AI companion in a safe space.",
+//       icon: <MessageCircle className="w-8 h-8" />,
+//       color: "from-blue-500 to-sky-400",
+//       buttonText: "Talk to Mitr",
+//       route: "/chat",
+//     },
+//     {
+//       title: "Self Help Toolkit",
+//       desc: "Guided exercises to calm your mind.",
+//       icon: <Briefcase className="w-8 h-8" />,
+//       color: "from-indigo-500 to-purple-400",
+//       buttonText: "Calm Mind",
+//       route: "/toolkit",
+//     },
+//     {
+//       title: "Mood Tracker",
+//       desc: "Visualize your emotional journey.",
+//       icon: <BarChart3 className="w-8 h-8" />,
+//       color: "from-teal-500 to-emerald-400",
+//       buttonText: "Check Vibe",
+//       route: "/mood",
+//     },
+//   ];
+
+//   const handleLogout = () => {
+//     localStorage.clear();
+//     router.push("/auth");
+//   };
+
+//   return (
+//     <main className="min-h-screen relative overflow-hidden flex flex-col bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 px-4 sm:px-6 py-10 sm:py-12">
+      
+//       {/* Wave Background Pattern */}
+//       <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none">
+//         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+//           <defs>
+//             <pattern id="wavePattern" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
+//               <path d="M 0 90 Q 45 50, 90 90 T 180 90" fill="none" stroke="rgba(99,102,241,0.22)" strokeWidth="3" />
+//             </pattern>
+//           </defs>
+//           <rect width="100%" height="100%" fill="url(#wavePattern)" />
+//         </svg>
+//       </div>
+
+//       <div className="relative z-10 max-w-6xl w-full mx-auto">
+        
+//         {/* Header Section */}
+//         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 sm:mb-16 gap-6 sm:gap-0">
+//           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+//             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
+//               MitrAI <span className="text-indigo-600">Dashboard</span>
+//             </h1>
+//             <p className="text-gray-500 text-sm sm:text-base font-medium">
+//               What would you like to explore today? ✨
+//             </p>
+//           </motion.div>
+
+//           <motion.button
+//             whileHover={{ scale: 1.1, rotate: 45 }}
+//             onClick={() => router.push("/settings")}
+//             className="p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg text-indigo-500 cursor-pointer border border-white/50"
+//           >
+//             <Settings size={22} />
+//           </motion.button>
+//         </header>
+
+//         {/* 3-Column Grid */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+//           {cards.map((card, idx) => (
+//             <motion.div
+//               key={idx}
+//               initial={{ opacity: 0, y: 20 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               transition={{ delay: idx * 0.1 }}
+//               whileHover={{ scale: 1.05, y: -5 }}
+//               onClick={() => router.push(card.route)}
+//               className="cursor-pointer bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 shadow-xl flex flex-col aspect-square border border-white/40"
+//             >
+//               <div className={`w-16 h-16 bg-gradient-to-br ${card.color} text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200/50`}>
+//                 {card.icon}
+//               </div>
+
+//               <h3 className="text-2xl font-bold text-gray-800 mb-3 leading-tight">
+//                 {card.title}
+//               </h3>
+
+//               <p className="text-gray-500 text-sm mb-6 font-medium leading-relaxed">
+//                 {card.desc}
+//               </p>
+
+//               <button
+//                 className={`mt-auto w-full py-4 bg-gradient-to-r ${card.color} text-white rounded-full font-bold text-xs uppercase tracking-widest shadow-md hover:brightness-105 transition-all`}
+//               >
+//                 {card.buttonText}
+//               </button>
+//             </motion.div>
+//           ))}
+//         </div>
+
+//         {/* Quote Section */}
+//         <motion.div 
+//           initial={{ opacity: 0 }}
+//           animate={{ opacity: 1 }}
+//           className="bg-white/30 backdrop-blur-sm rounded-[2rem] p-8 text-center max-w-3xl mx-auto border border-white/30 shadow-sm"
+//         >
+//           <p className="italic text-gray-600 font-medium text-sm sm:text-base leading-relaxed">
+//             "Your journey to a calmer mind starts with a single step. Mitr is here for you."
+//           </p>
+//         </motion.div>
+//       </div>
+
+//       {/* Logout Button */}
+//       <motion.button
+//         whileHover={{ scale: 1.05, x: -5 }}
+//         whileTap={{ scale: 0.95 }}
+//         onClick={handleLogout}
+//         className="fixed bottom-8 right-8 flex items-center gap-3 px-6 py-3 bg-white/90 backdrop-blur-md text-red-500 rounded-full shadow-2xl font-bold text-sm border border-red-50 hover:bg-red-50 transition-colors"
+//       >
+//         <LogOut size={18} />
+//         Logout
+//       </motion.button>
+//     </main>
+//   );
+// }
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -9,34 +153,35 @@ import {
   LogOut,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Dashboard() {
   const router = useRouter();
+  const { t } = useLanguage();
 
-  // Calendar hata diya hai, ab sirf 3 main tools hain
   const cards = [
     {
-      title: "MitrAI Chatbot",
-      desc: "Talk to your AI companion in a safe space.",
+      title: t("chatbotTitle"),
+      desc: t("chatbotDesc"),
       icon: <MessageCircle className="w-8 h-8" />,
       color: "from-blue-500 to-sky-400",
-      buttonText: "Talk to Mitr",
+      buttonText: t("chatbotBtn"),
       route: "/chat",
     },
     {
-      title: "Self Help Toolkit",
-      desc: "Guided exercises to calm your mind.",
+      title: t("toolkitTitle"),
+      desc: t("toolkitDesc"),
       icon: <Briefcase className="w-8 h-8" />,
       color: "from-indigo-500 to-purple-400",
-      buttonText: "Calm Mind",
+      buttonText: t("toolkitBtn"),
       route: "/toolkit",
     },
     {
-      title: "Mood Tracker",
-      desc: "Visualize your emotional journey.",
+      title: t("moodTitle"),
+      desc: t("moodDesc"),
       icon: <BarChart3 className="w-8 h-8" />,
       color: "from-teal-500 to-emerald-400",
-      buttonText: "Check Vibe",
+      buttonText: t("moodBtn"),
       route: "/mood",
     },
   ];
@@ -47,14 +192,20 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen relative overflow-hidden flex flex-col bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 px-4 sm:px-6 py-10 sm:py-12">
-      
-      {/* Wave Background Pattern */}
+    <main className="min-h-screen relative overflow-hidden flex flex-col 
+      bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 px-4 sm:px-6 py-10 sm:py-12">
+
+      {/* Background Pattern */}
       <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           <defs>
             <pattern id="wavePattern" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
-              <path d="M 0 90 Q 45 50, 90 90 T 180 90" fill="none" stroke="rgba(99,102,241,0.22)" strokeWidth="3" />
+              <path
+                d="M 0 90 Q 45 50, 90 90 T 180 90"
+                fill="none"
+                stroke="rgba(99,102,241,0.22)"
+                strokeWidth="3"
+              />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#wavePattern)" />
@@ -62,29 +213,30 @@ export default function Dashboard() {
       </div>
 
       <div className="relative z-10 max-w-6xl w-full mx-auto">
-        
-        {/* Header Section */}
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 sm:mb-16 gap-6 sm:gap-0">
+
+        {/* Header */}
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-14 gap-6">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
-              MitrAI <span className="text-indigo-600">Dashboard</span>
+              {t("dashboardTitle")}{" "}
+              <span className="text-indigo-600">{t("dashboardHighlight")}</span>
             </h1>
             <p className="text-gray-500 text-sm sm:text-base font-medium">
-              What would you like to explore today? ✨
+              {t("dashboardSubtitle")}
             </p>
           </motion.div>
 
           <motion.button
             whileHover={{ scale: 1.1, rotate: 45 }}
             onClick={() => router.push("/settings")}
-            className="p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg text-indigo-500 cursor-pointer border border-white/50"
+            className="p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg text-indigo-500 border border-white/50"
           >
             <Settings size={22} />
           </motion.button>
         </header>
 
-        {/* 3-Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-14">
           {cards.map((card, idx) => (
             <motion.div
               key={idx}
@@ -95,11 +247,11 @@ export default function Dashboard() {
               onClick={() => router.push(card.route)}
               className="cursor-pointer bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 shadow-xl flex flex-col aspect-square border border-white/40"
             >
-              <div className={`w-16 h-16 bg-gradient-to-br ${card.color} text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200/50`}>
+              <div className={`w-16 h-16 bg-gradient-to-br ${card.color} text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg`}>
                 {card.icon}
               </div>
 
-              <h3 className="text-2xl font-bold text-gray-800 mb-3 leading-tight">
+              <h3 className="text-2xl font-bold text-gray-800 mb-3">
                 {card.title}
               </h3>
 
@@ -116,27 +268,29 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Quote Section */}
-        <motion.div 
+        {/* Quote */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="bg-white/30 backdrop-blur-sm rounded-[2rem] p-8 text-center max-w-3xl mx-auto border border-white/30 shadow-sm"
         >
           <p className="italic text-gray-600 font-medium text-sm sm:text-base leading-relaxed">
-            "Your journey to a calmer mind starts with a single step. Mitr is here for you."
+            {t("dashboardQuote")}
           </p>
         </motion.div>
       </div>
 
-      {/* Logout Button */}
+      {/* Logout */}
       <motion.button
         whileHover={{ scale: 1.05, x: -5 }}
         whileTap={{ scale: 0.95 }}
         onClick={handleLogout}
-        className="fixed bottom-8 right-8 flex items-center gap-3 px-6 py-3 bg-white/90 backdrop-blur-md text-red-500 rounded-full shadow-2xl font-bold text-sm border border-red-50 hover:bg-red-50 transition-colors"
+        className="fixed bottom-8 right-8 flex items-center gap-3 px-6 py-3 
+          bg-white/90 backdrop-blur-md text-red-500 rounded-full shadow-2xl font-bold text-sm 
+          border border-red-50 hover:bg-red-50 transition-colors"
       >
         <LogOut size={18} />
-        Logout
+        {t("logout")}
       </motion.button>
     </main>
   );
