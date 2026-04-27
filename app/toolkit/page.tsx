@@ -40,7 +40,8 @@ export default function ToolkitPage() {
     else setActiveTab(null);
   };
   
-  const activeContent = toolkitData || allData;
+  //const activeContent = toolkitData || allData;
+  const activeContent = toolkitData?.stories ? toolkitData : allData;
   useEffect(() => {
     const fetchUserMoodAndToolkit = async () => {
       try {
@@ -111,7 +112,17 @@ export default function ToolkitPage() {
                     <ArrowLeft size={20} /> Main Menu
                 </button>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {(activeTab === "stories" ? activeContent.stories[activeGenre!] : activeContent[activeTab!]).map((item: any) => (
+                  {(
+                    activeTab === "stories"
+              ? (activeContent.stories[activeGenre!] || [])
+    : (activeContent[activeTab!] || [])
+    ).length > 0 ? (
+  (
+    activeTab === "stories"
+      ? (activeContent.stories[activeGenre!] || [])
+      : (activeContent[activeTab!] || [])
+  ).map((item: any) => 
+                    (
                     <div key={item.id} onClick={() => setSelectedItem(item)} className="bg-white/80 backdrop-blur-md p-6 rounded-[2.5rem] border border-white flex items-center justify-between cursor-pointer hover:shadow-xl transition-all group">
                       <div className="flex items-center gap-6">
                           <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white shadow-inner group-hover:scale-110 transition-transform`}>
@@ -124,7 +135,12 @@ export default function ToolkitPage() {
                       </div>
                       <ChevronRight size={20} className="text-indigo-300 group-hover:translate-x-1 transition-transform" />
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 text-lg col-span-2">
+                  No content available 😅
+                  </p>
+                )}
                 </div>
               </motion.div>
             )}

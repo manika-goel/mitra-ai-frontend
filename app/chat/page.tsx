@@ -125,15 +125,22 @@ useEffect(() => {
           user_id: currentUser_id // Backend ko user_id bhej rahe hain save karne ke liye
         })
       });
-      if (!response.ok) throw new Error("Server error");
+      //if (!response.ok) throw new Error("Server error");
       const data = await response.json();
-      const botId = "b-" + Date.now();
+      //const botId = "b-" + Date.now();
 
+      
+      if (response.ok && data.reply) {
+      const botId = "b-" + Date.now();
       setMessages((prev) => [...prev, { 
         text: data.reply, 
         sender: "bot", 
         id: botId 
       }]);
+      } else {
+      // Agar backend se 'reply' nahi aaya toh custom message dikhao
+      throw new Error("Invalid response from server");
+    }
 
     } catch (error) {
       console.error("Connection Error:", error);

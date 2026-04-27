@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Info, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// Mock Data: Isko baad mein backend se connect karenge
+// Mock Data (Static Reference)
 const moodHistory = {
   "2026-01-01": { mood: "Happy", score: 90, color: "#6366F1" },
   "2026-01-02": { mood: "Sad", score: 30, color: "#94A3B8" },
@@ -14,7 +14,30 @@ const moodHistory = {
 
 export default function MoodHistory() {
   const router = useRouter();
+  
+  // Hooks must be INSIDE the function
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [events, setEvents] = useState<any[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedId = localStorage.getItem("user_id");
+    if (savedId) {
+      setUserId(savedId);
+      fetchEvents(savedId);
+    }
+  }, []);
+
+  const fetchEvents = async (uid: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/api/calendar/${uid}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      setEvents(data);
+    } catch (err) {
+      console.error("Calendar load error:", err);
+    }
+  };
 
   // Calendar Logic
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -27,15 +50,14 @@ export default function MoodHistory() {
   const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
 
   return (
-    <main className="min-h-screen bg-[#F8FAFF] px-6 py-8 overflow-y-auto">
+    <main className="min-h-screen bg-[#F8FAFF] px-6 py-8 overflow-y-auto font-sans">
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
         <header className="flex items-center justify-between mb-10">
-          <button onClick={() => router.push("/mood")} className="p-3 bg-white rounded-2xl shadow-sm text-indigo-600 border border-slate-100">
+          <button onClick={() => router.push("/mood")} className="p-3 bg-white rounded-2xl shadow-sm text-indigo-600 border border-slate-100 transition-hover hover:bg-slate-50">
             <ArrowLeft size={20} />
           </button>
-          {/* UPDATED TITLE HERE */}
           <h1 className="text-3xl font-black text-slate-800 italic uppercase tracking-tight">
             Mood <span className="text-indigo-600">Calendar</span>
           </h1>
@@ -55,8 +77,8 @@ export default function MoodHistory() {
             </div>
             
             <div className="flex gap-2">
-              <button className="p-2 hover:bg-slate-50 rounded-xl border border-slate-100 text-slate-400 transition-all"><ChevronLeft size={20}/></button>
-              <button className="p-2 hover:bg-slate-50 rounded-xl border border-slate-100 text-slate-400 transition-all"><ChevronRight size={20}/></button>
+              <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))} className="p-2 hover:bg-slate-50 rounded-xl border border-slate-100 text-slate-400 transition-all"><ChevronLeft size={20}/></button>
+              <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))} className="p-2 hover:bg-slate-50 rounded-xl border border-slate-100 text-slate-400 transition-all"><ChevronRight size={20}/></button>
             </div>
           </div>
 
@@ -72,7 +94,9 @@ export default function MoodHistory() {
             {blanks.map(b => <div key={`blank-${b}`} />)}
             {days.map(day => {
               const dateStr = `${year}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-              const data = moodHistory[dateStr as keyof typeof moodHistory];
+              
+              // Find data in fetched events or fallback to mock
+              const data = events.find((e: any) => e.date === dateStr) || moodHistory[dateStr as keyof typeof moodHistory];
               
               return (
                 <motion.div 
@@ -85,19 +109,17 @@ export default function MoodHistory() {
                 >
                   <span className={`text-xs font-bold ${data ? 'text-slate-800' : 'text-slate-400'}`}>{day}</span>
                   
-                  {/* Mini Indicator if Mood exists */}
                   {data && (
                     <div className="mt-1">
-                       <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: data.color }} />
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: data.color }} />
                     </div>
                   )}
 
-                  {/* Tooltip on Hover */}
                   {data && (
                     <div className="absolute bottom-full mb-2 hidden group-hover:block z-20 w-32 bg-slate-900 text-white p-2 rounded-xl text-center shadow-2xl">
-                       <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Mood</p>
-                       <p className="text-xs font-bold">{data.mood} ({data.score}%)</p>
-                       <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45" />
+                      <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Mood</p>
+                      <p className="text-xs font-bold">{data.mood} ({data.score}%)</p>
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45" />
                     </div>
                   )}
                 </motion.div>
@@ -108,23 +130,23 @@ export default function MoodHistory() {
 
         {/* Stats Summary Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-           <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-100 relative overflow-hidden group">
-              <div className="relative z-10">
-                 <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-2">Monthly Pattern</p>
-                 <p className="text-lg font-bold italic leading-tight">Bhai, you were most <br/> productive on Wednesdays! 🚀</p>
-              </div>
-              <Info className="absolute right-[-10px] bottom-[-10px] w-24 h-24 text-white/10" />
-           </div>
+          <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-100 relative overflow-hidden group">
+            <div className="relative z-10">
+              <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-2">Monthly Pattern</p>
+              <p className="text-lg font-bold italic leading-tight">Bhai, you were most <br/> productive on Wednesdays! 🚀</p>
+            </div>
+            <Info className="absolute right-[-10px] bottom-[-10px] w-24 h-24 text-white/10" />
+          </div>
 
-           <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-white flex items-center gap-5">
-              <div className="p-4 bg-rose-50 text-rose-500 rounded-3xl animate-pulse">
-                <Heart fill="currentColor" size={24} />
-              </div>
-              <div>
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Consistency</p>
-                <p className="text-xl font-black text-slate-800 italic">12 Day Streak</p>
-              </div>
-           </div>
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-white flex items-center gap-5">
+            <div className="p-4 bg-rose-50 text-rose-500 rounded-3xl animate-pulse">
+              <Heart fill="currentColor" size={24} />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Consistency</p>
+              <p className="text-xl font-black text-slate-800 italic">12 Day Streak</p>
+            </div>
+          </div>
         </div>
 
       </div>

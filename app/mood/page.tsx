@@ -40,6 +40,37 @@ export default function MoodTracker() {
     fetchMoodData();
   }, []);
 
+  const saveMoodToBackend = async () => {
+  const today = new Date().toISOString().split('T')[0]; // Format: 2026-01-26
+  const userId = localStorage.getItem("user_id");
+  const moodColors: { [key: string]: string } = {
+    Excited: "#6366F1",
+    Sad: "#94A3B8",
+    Steady: "#6366F1"
+  };
+
+  const payload = {
+    user_id: userId,
+    date: today,
+    mood: detectedMood,
+    score: energyScore,
+    color: moodColors[detectedMood] || "#6366F1"
+  };
+
+  try {
+    const res = await fetch("http://127.0.0.1:5000/api/calendar/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      alert("Aaj ka mood Calendar mein save ho gaya hai! ✨");
+    }
+  } catch (err) {
+    console.error("Save error:", err);
+  }
+};
+
   const getAvatarConfig = () => {
     switch (detectedMood) {
       case "Excited":
@@ -162,7 +193,10 @@ export default function MoodTracker() {
               <motion.button 
                 whileHover={{ scale: 1.05, y: -5, backgroundColor: "#6366F1", color: "#ffffff" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => router.push("/calendar")}
+                onClick={async () => {
+                await saveMoodToBackend(); // Pehle save karega
+                router.push("/calendar");   // Fir calendar par bhejega
+                }}
                 className="w-24 shrink-0 bg-white rounded-[2.5rem] border border-white shadow-xl flex flex-col items-center justify-center text-indigo-600 group transition-all duration-300"
               >
                   <CalendarIcon size={28} className="group-hover:rotate-12 transition-transform" />
